@@ -1,17 +1,25 @@
 import Contact from "../Contact/Contact";
 import css from "./ContactList.module.css";
+import { useSelector } from "react-redux";
+import { selectContacts, selectNameFilter } from "../../redux/selectors";
 
-export default function ContactList({ contacts, deleteContact }) {
+function filterContacts(contacts, filter) {
+  const filteredContacts = [];
+  contacts.map((contact) => {
+    if (contact.name.toUpperCase().includes(filter.toUpperCase())) {
+      filteredContacts.push(contact);
+    }
+  });
+  return filteredContacts;
+}
+
+export default function ContactList() {
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectNameFilter);
   return (
     <ul className={css.contactList}>
-      {contacts.map((contact) => {
-        return (
-          <Contact
-            key={contact.id}
-            contact={contact}
-            deleteContact={deleteContact}
-          />
-        );
+      {filterContacts(contacts, filter).map((contact) => {
+        return <Contact key={contact.id} contact={contact} />;
       })}
     </ul>
   );
